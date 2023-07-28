@@ -1,0 +1,242 @@
+Getting Started With Docker 
+*** From Zero to Advanced Level ***
+I Hope My Own Prepared Notes will Help you to understand about Docker in a efficient way...!! Please Go Through it Once...!!
+
+
+
+Author-
+Mr.Abhishek Sachin Dhondalkar
+Fergusson College, Pune. 
+
+
+
+Container -
+
+- Used to Containarize different Applications
+- Isolated env they can have own processor,networks and network interfaces
+- Docker has only one kernel
+- Instead, VM needs Seperate OS to run but Docker shares same OS for Running application
+- Lightweight, less memory, fast boot up
+- Docker in DevOps  => DevOps = Developers + Operators
+
+Docker Image is like .DLL in c#, which is nothing but a package of resources
+We will give DockerImage to User to run/deploy Diff Applications on same
+
+Docker Edition-
+ 1. Community - Free to use
+ 2. Enterprise - provide Security, additional features
+
+Community edition available on Linux. That is the best.
+For Windows will need to install Docker Desktop.
+
+- Demo to install Docker vTime17.02
+- Linux Command - car /etc/*release* - to get all info of os.
+
+
+- To run Docker and Print Hello-World!
+  sudo docker run docker/whalesay cowsay Hello-World!
+
+- Docker Commands-
+	write docker on CLI of Docker to get all commands list.
+	 1. docker run nginx - to run instance of nginx application from the docker and If image of resp app is not on machine then download from 		dockerHub
+	 2. docker ps - list all running containers and some basic info about them such as imgName,ContainerID.
+	 3. docker ps -a - to know is all containers are running or not
+	 4. docker stop containerID/containerName - to stop particular container running
+	 5. docker rm containerName - to remove container permanently that is not in use.
+	 6. docker images - list of available images on host.
+	 7. docker rmi imgName - to remove permanently a image
+	 8. docker pull imgName - to only pull the image not to run.
+	 9. docker run ubuntu sleep 5 - for 5 sec we are putting our os to sleep
+	 10. docker exec distracted_mcclintock cat /etc/host - to print content of hosts file while some other container is running on and we 			have to execute another img in between
+ 	11. docker version - to get version of docker server engine running on host.
+ 	12. Docker Attach and Detach -
+ 		1. docker run -d kodekloud/imgName = which runs application in background without stoping docker command prompt
+ 		2. docker run kedekloud/imgName = which run application as attach on localhost but other working of docker propmt is stopped then 			to stop it's running cntrl+c.
+ 	3. docker attach containerID - to attach
+
+- We can Run Docker Files on Web -
+	kodekloud.com/p/docker-labs
+
+
+- Some other Docker Commands-
+ 	1. docker run containerName:4.0(version) - To run a Container with specific version
+    	2. docker run -i ContainerName (i for interactive mode) means taking propmt input by user if need
+    	3. docker run -it containerName (here additional t for terminal of Container that is nothing but prompt will wait for input as like c 			Language prompt but in above case it was not like that
+    	4. docker run containerName - by using this command our application is run on port no 5000 but to change it we have to use command as - 			docker run -p 80:5000 ContainerName - so all all traffic will forwarded to port 80.
+   	5. If we want to run a Container which is outside a container so to do so,
+		docker run -v /opt/datadir/:/var/lib/MySQL MySQL - here we are trying to run MySQL server as container and is not part of 			container host,still we can run it by specifying its path as above, it will mount the other directory
+   	6. docker inspect containerName - to get inDetailed Info of Container
+   	7. docker logs containerName - to get all logs/Audit History about Container
+
+
+- Environment Variable in Docker -
+	1.In app.py using Flask,
+		Inside app.py-
+		Color = os.environ.get('App_Color')
+		to get it at the time of writting Commands-
+		docker run -e App_Color= blue containerName
+	2. To get Environment variable list- docker inspect containerName so after inspect in config dict you will get list of environment 		variable associated with Container.
+		Docker Images vTime-46.03
+ 		1. Creation of Images-
+ 		2. Make a docker file as below and then perform run operation as like below
+			If in case error is occured at specific layer suppose layer no. 03 so By using command after make req changes use command- 			docker build Dockerfile -t imgName.
+
+
+- CMD vs EntryPoint-
+	EntryPoint is like Cmd arguments we just have to specify what are args , and that we have to provide while writting command as -
+ 	Entry point will be appended at time of Command Execution As -  docker run ubuntu-sleeper: sleep 10
+ 
+ 
+ - Networks in Docker-
+ 
+ 	1. Bridge ( docker run ubuntu )
+ 		This is private inetrnal network created on host and all containers attached to it at host And gets a IP addr to individually.
+    	2. Host ( docker run ubuntu --network=host )
+          to access container outside the network using host
+     	3. NONE ( docker run ubuntu --network=host )
+          nor attached to any host , they run in an isolated network.
+
+
+- To create User-defined network-
+	docker network create \ --driver bridge \ --subnet 182.18.0.0\16 custom-isolated-network
+		A new IP address will created by default it takes 172.----------
+		To check previously added network so that we can create a new one without troubles to any existing
+		- docker network ls - this will list down all the network existed.
+ 
+ 	Docker uses thier Container Name to Communicate with each other, as IP addr is also one of the option but can't use it coz after boot 		docker IP will change so...
+	- To get Info about IP addr and other Network related info -
+		docker inspect containerName;
+
+
+- Docker Storage-
+	- It stores data/file at - /var/lib/docker
+	- It stores data according to layered architecture
+	- Layered data is Read Only , we don't have access to write any changes in any file
+	- If we create any changes app.py file or in files that are kept in Container, so for that a temp container layer is created, and into 			that temp files are stored but In case of we want to store that temp files permanently, to do so,
+		We have to create persist volume, docker volume create data_volume and to mount data in it,
+ 			docker run -v data_volume:/var/lib/MySQL MySQL , so data of MySQL will stored permanently.
+
+	- Storage Drivers are used to copy write read data from storage.
+	- Common storage Drivers are- AUFS, ZFS, BTRFS, DEVICE MAPPER, OVERLAY, OVERLAY2
+
+
+- Docker Compose-
+	- Linking of different server/application to run simultaneously.
+	- Link command is used to link two or more containers together.
+	- Now to Deploy a Image on diff location we need a same version and have to make new version2 for all by setting it as-
+		After creating version2 , we don't need to provide linking and stack flow,
+		although, version2 is not enough, then we have version3, as it added docker swarm ( to be learn in detail furthur)
+		Make front and backend both are different to work alone...to overcome with future traffic issue as ....
+	By using Network,
+ 		Docker Registry -
+		All Docker images stored on cloud
+		It's a central repository for docker images
+		- Default Registry- docker.io/imgName/imgName
+		This images are publically downloaded and easy to access.
+		Private Registry- that are provided by AWS , GCP , Azure, we have to perform login activity to access it.
+		docker login private-registry.io
+
+- To deploy a private registry-
+	docker run -d -p 5000:5000 -name registry registry:2
+- To add tag to image-
+	docker image tag my-image localhost:5000/my-image
+- To push image on docker private registry-
+	docker push localhost:5000/my-image
+
+
+	Now, we can pull/access this image on either same localhost or on different places
+	docker pull localhost:5000/my-image or docker pull 192.168.56.100.5000/my-image
+
+
+	Docker Engine Consists-
+ 	1. Docker CLI
+ 	2. Rest API
+	3. Docker Deamon
+ 
+ - Docker CLI is nothing but commands that we apply on localhost as like CMD on server, for each container unique process id is generated and  		associated with given parent/child process. There are several NAMESPACES that contains the ProcessIDs
+- Docker host as well as containers shares the same system resources such as CPU and memory.
+- Container uses all the resources which are also for Host
+- To Control the use of resources to container, docker uses - cgroups( Control-Group ) So,
+
+	docker run --cpus=.5 ubuntu , docker run --memory=110m ubuntu
+
+	So by above command we will able to restrict container to use 50% of CPU to use for Ubuntu and 100mb memory to ubuntu
+
+
+- Docker on Windows-
+
+Microsoft Hyper-v is newest Application that is set of all required soft for running
+It is only applicable for Windows 10 enterprise / professional edition
+Container Orchestration -
+It is set of tools and scripts that can help host containers in a production environment.
+To check Health and Load for each container.
+If in case any container fails due to load, so remove it and run another instance of container
+It consists multiple docker hosts that can host containers.
+This allows to run 1000s of instance of application with single command-
+      docker service create --replicas=100 nodejs , this create 100 instance of nodeJS
+To increase and decrease the scales of containers according to need.
+It Provides a internal Communication between containers
+There are multiple orchestration available today as-
+Docker Swarm, Kunernetes, Mesos.
+It supports majorly in deployment.
+
+
+
+
+
+
+
+
+- Kubernetes-
+	- It allows us to run application 1000 to 2000 on different scales.
+	- Kunernetes even configured automatically according to load adjust itself.
+	- Based on user load kubernetes adjust itself in different scale
+	- To run 1000 replicas of img-
+     		kubectl run --replicas=1000 ingName
+	- To scale(automatically) at highest count of Containers-
+     		kubectl scale --replicas=2000 imgName
+	- To upgrade img-
+     		kubectl rolling-update imgName --image=web-server:2
+	- If something goes goes wrong to go rollback with single command-
+     		kubectl rolling-update imgName --rollback
+	- It helps to test new features of our application by only upgrading of these instances
+	- Many top most vendors are based on Kubernetes
+	- It provide various authentication and authorisation mechanism. All cloud supporter has a support of kubernetes
+	- Kubernetes supports as natives to docker. It support alternative to docker such as- rocket or crier.
+	- Kubernetes contains set of nodes. Node is a machine(physical or virtual) on which Kubernetes software is installed.
+		And on this Node, our containers are launched by Kubernetes.
+	- Cluster is set of nodes grouped together, if in case a node fails still coz of cluster our application is running well
+	- A Master Node is used to Control, moniter, keep look on Cluster.
+	- A Master Node is responsible for orchestration of containers of working mode.
+
+	- Kubernetes= API server + etcd server + kubelet service + container runtime(engine) +
+                        +bunch of controllers + scheduler
+
+
+	To communicate with Kubernetes API server is used .
+	etcd server stores the key-value pair data to store all data to manage cluster.
+	Scheduler responsible for distributing work or containers across multiple nodes.assign node to new cont
+	Controllers are brain behind orchestration, responsible for making decisions , brings new containers
+	Container Runtime- is software is used to run containers
+	Kubelet is agent that runs each node in the cluster.
+	In Kubernetes, CLI is known as Cube Control or cube cuddle.
+
+
+- Commands-
+	Kubectl run imgName - to run
+	Kubectl cluster-info - to get info about Cluster
+	Kubectl get nodes - used to get list of all nodes part of cluster.
+
+
+
+
+
+
+
+
+
+Author, 
+Abhishek Sachin Dhondalkar 
+Student, Fergusson College Pune.
+
+
